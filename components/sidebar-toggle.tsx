@@ -1,11 +1,11 @@
 import type { ComponentProps } from 'react';
 
-import { type SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
+import { type SidebarTrigger, useSidebar } from './ui/sidebar';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from './ui/tooltip';
 
 import { SidebarLeftIcon } from './icons';
 import { Button } from './ui/button';

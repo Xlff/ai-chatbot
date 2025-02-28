@@ -5,7 +5,7 @@ import cx from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import { memo, useMemo, useState } from 'react';
 
-import type { Vote } from '@/lib/db/schema';
+import type { Vote } from '@/lib/local-storage/index';
 
 import { DocumentToolCall, DocumentToolResult } from './document';
 import {

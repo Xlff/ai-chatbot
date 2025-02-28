@@ -25,8 +25,10 @@ export const authConfig = {
       }
 
       if (isOnChat) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
+        // 暂时注释掉强制登录的功能
+        // if (isLoggedIn) return true;
+        // return false; // Redirect unauthenticated users to login page
+        return true; // 允许未登录用户访问聊天页面
       }
 
       if (isLoggedIn) {

@@ -1,14 +1,14 @@
 'use client';
 
 import { ReactNode, useMemo, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from './ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
+} from './ui/dropdown-menu';
+import { cn } from '../lib/utils';
 
 import {
   CheckCircleFillIcon,
@@ -16,7 +16,7 @@ import {
   GlobeIcon,
   LockIcon,
 } from './icons';
-import { useChatVisibility } from '@/hooks/use-chat-visibility';
+import { useChatVisibility } from '../hooks/use-chat-visibility';
 
 export type VisibilityType = 'private' | 'public';
 

@@ -6,7 +6,7 @@ import { useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 
 import { ChatHeader } from '@/components/chat-header';
-import type { Vote } from '@/lib/db/schema';
+import type { Vote } from '@/lib/local-storage/index';
 import { fetcher, generateUUID } from '@/lib/utils';
 
 import { Artifact } from './artifact';

@@ -13,7 +13,7 @@ import {
   getChatById,
   saveChat,
   saveMessages,
-} from '@/lib/db/queries';
+} from '@/lib/local-storage/queries';
 import {
   generateUUID,
   getMostRecentUserMessage,
@@ -38,9 +38,13 @@ export async function POST(request: Request) {
 
   const session = await auth();
 
-  if (!session || !session.user || !session.user.id) {
-    return new Response('Unauthorized', { status: 401 });
-  }
+  // 暂时注释掉强制登录的检查
+  // if (!session || !session.user || !session.user.id) {
+  //   return new Response('Unauthorized', { status: 401 });
+  // }
+  
+  // 如果未登录，使用默认用户 ID
+  const userId = session?.user?.id || 'anonymous-user';
 
   const userMessage = getMostRecentUserMessage(messages);
 
@@ -52,7 +56,7 @@ export async function POST(request: Request) {
 
   if (!chat) {
     const title = await generateTitleFromUserMessage({ message: userMessage });
-    await saveChat({ id, userId: session.user.id, title });
+    await saveChat({ id, userId, title });
   }
 
   await saveMessages({
@@ -87,27 +91,25 @@ export async function POST(request: Request) {
           }),
         },
         onFinish: async ({ response, reasoning }) => {
-          if (session.user?.id) {
-            try {
-              const sanitizedResponseMessages = sanitizeResponseMessages({
-                messages: response.messages,
-                reasoning,
-              });
+          try {
+            const sanitizedResponseMessages = sanitizeResponseMessages({
+              messages: response.messages,
+              reasoning,
+            });
 
-              await saveMessages({
-                messages: sanitizedResponseMessages.map((message) => {
-                  return {
-                    id: message.id,
-                    chatId: id,
-                    role: message.role,
-                    content: message.content,
-                    createdAt: new Date(),
-                  };
-                }),
-              });
-            } catch (error) {
-              console.error('Failed to save chat');
-            }
+            await saveMessages({
+              messages: sanitizedResponseMessages.map((message) => {
+                return {
+                  id: message.id,
+                  chatId: id,
+                  role: message.role,
+                  content: message.content,
+                  createdAt: new Date(),
+                };
+              }),
+            });
+          } catch (error) {
+            console.error('Failed to save chat');
           }
         },
         experimental_telemetry: {
@@ -145,7 +147,7 @@ export async function DELETE(request: Request) {
   try {
     const chat = await getChatById({ id });
 
-    if (chat.userId !== session.user.id) {
+    if (!chat || chat.userId !== session.user.id) {
       return new Response('Unauthorized', { status: 401 });
     }
 

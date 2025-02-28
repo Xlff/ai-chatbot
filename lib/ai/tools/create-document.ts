@@ -6,9 +6,10 @@ import {
   artifactKinds,
   documentHandlersByArtifactKind,
 } from '@/lib/artifacts/server';
+import { saveDocument } from '@/lib/local-storage/queries';
 
 interface CreateDocumentProps {
-  session: Session;
+  session: Session | null;
   dataStream: DataStreamWriter;
 }
 
@@ -57,6 +58,16 @@ export const createDocument = ({ session, dataStream }: CreateDocumentProps) =>
         title,
         dataStream,
         session,
+      });
+
+      const userId = session?.user?.id || 'anonymous-user';
+      
+      await saveDocument({
+        id,
+        title,
+        content: '',
+        kind,
+        userId,
       });
 
       dataStream.writeData({ type: 'finish', content: '' });

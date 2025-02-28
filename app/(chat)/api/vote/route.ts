@@ -1,5 +1,5 @@
 import { auth } from '@/app/(auth)/auth';
-import { getVotesByChatId, voteMessage } from '@/lib/db/queries';
+import { getVotesByChatId, voteMessage } from '@/lib/local-storage/queries';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -11,9 +11,10 @@ export async function GET(request: Request) {
 
   const session = await auth();
 
-  if (!session || !session.user || !session.user.email) {
-    return new Response('Unauthorized', { status: 401 });
-  }
+  // 暂时注释掉强制登录的检查
+  // if (!session || !session.user || !session.user.email) {
+  //   return new Response('Unauthorized', { status: 401 });
+  // }
 
   const votes = await getVotesByChatId({ id: chatId });
 
@@ -34,9 +35,10 @@ export async function PATCH(request: Request) {
 
   const session = await auth();
 
-  if (!session || !session.user || !session.user.email) {
-    return new Response('Unauthorized', { status: 401 });
-  }
+  // 暂时注释掉强制登录的检查
+  // if (!session || !session.user || !session.user.email) {
+  //   return new Response('Unauthorized', { status: 401 });
+  // }
 
   await voteMessage({
     chatId,

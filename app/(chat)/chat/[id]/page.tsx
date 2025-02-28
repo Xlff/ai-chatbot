@@ -3,10 +3,11 @@ import { notFound } from 'next/navigation';
 
 import { auth } from '@/app/(auth)/auth';
 import { Chat } from '@/components/chat';
-import { getChatById, getMessagesByChatId } from '@/lib/db/queries';
+import { getChatById, getMessagesByChatId } from '@/lib/local-storage/queries';
 import { convertToUIMessages } from '@/lib/utils';
 import { DataStreamHandler } from '@/components/data-stream-handler';
 import { DEFAULT_CHAT_MODEL } from '@/lib/ai/models';
+import { VisibilityType } from '@/components/visibility-selector';
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -30,11 +31,14 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   }
 
   const messagesFromDb = await getMessagesByChatId({
-    id,
+    chatId: id,
   });
 
   const cookieStore = await cookies();
   const chatModelFromCookie = cookieStore.get('chat-model');
+
+  // 确保 visibility 是有效的 VisibilityType
+  const visibility: VisibilityType = (chat.visibility as VisibilityType) || 'private';
 
   if (!chatModelFromCookie) {
     return (
@@ -43,7 +47,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           id={chat.id}
           initialMessages={convertToUIMessages(messagesFromDb)}
           selectedChatModel={DEFAULT_CHAT_MODEL}
-          selectedVisibilityType={chat.visibility}
+          selectedVisibilityType={visibility}
           isReadonly={session?.user?.id !== chat.userId}
         />
         <DataStreamHandler id={id} />
@@ -57,7 +61,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         id={chat.id}
         initialMessages={convertToUIMessages(messagesFromDb)}
         selectedChatModel={chatModelFromCookie.value}
-        selectedVisibilityType={chat.visibility}
+        selectedVisibilityType={visibility}
         isReadonly={session?.user?.id !== chat.userId}
       />
       <DataStreamHandler id={id} />

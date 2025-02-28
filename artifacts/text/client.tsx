@@ -10,7 +10,7 @@ import {
   RedoIcon,
   UndoIcon,
 } from '@/components/icons';
-import { Suggestion } from '@/lib/db/schema';
+import { Suggestion } from '@/lib/local-storage/index';
 import { toast } from 'sonner';
 import { getSuggestions } from '../actions';
 
