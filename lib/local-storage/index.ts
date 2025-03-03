@@ -42,6 +42,8 @@ export interface Suggestion {
   documentCreatedAt: Date;
   content: string;
   userId: string;
+  originalText: string;
+  suggestedText: string;
 }
 
 // 类型定义

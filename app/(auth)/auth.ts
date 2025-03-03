@@ -40,6 +40,46 @@ export const {
         } as any;
       },
     }),
+    {
+      id: 'wechat',
+      name: 'WeChat',
+      type: 'oauth',
+      authorization: {
+        url: 'https://open.weixin.qq.com/connect/oauth2/authorize',
+        params: {
+          appid: process.env.WECHAT_APP_ID,
+          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/wechat`,
+          response_type: 'code',
+          scope: 'snsapi_userinfo',
+          state: 'STATE',
+        },
+      },
+      token: {
+        url: 'https://api.weixin.qq.com/sns/oauth2/access_token',
+        params: {
+          appid: process.env.WECHAT_APP_ID,
+          secret: process.env.WECHAT_APP_SECRET,
+          code: '',
+          grant_type: 'authorization_code',
+        },
+      },
+      userinfo: {
+        url: 'https://api.weixin.qq.com/sns/userinfo',
+        params: {
+          access_token: '',
+          openid: '',
+          lang: 'zh_CN',
+        },
+      },
+      profile(profile) {
+        return {
+          id: profile.openid,
+          name: profile.nickname,
+          image: profile.headimgurl,
+          email: `${profile.openid}@wechat.com`, // 微信没有提供邮箱，使用 openid 作为邮箱
+        };
+      },
+    },
   ],
   callbacks: {
     async jwt({ token, user }) {
